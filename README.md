@@ -33,8 +33,6 @@
     pip install databricks-cli <br>
     pip install dbx
 
-6. Make sure that the versions that you have used above, match with the versions of your Databricks cluster. Check the below [link](https://docs.microsoft.com/en-us/azure/databricks/release-notes/runtime/releases) for more information on DBR release notes
-
 7. Create a new branch and work on any changes required for your specific use case or create new methods/classes that can be reused by other teams
 
   
