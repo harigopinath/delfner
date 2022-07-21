@@ -33,7 +33,9 @@
     pip install databricks-cli <br>
     pip install dbx
 
-7. Create a new branch and work on any changes required for your specific use case or create new methods/classes that can be reused by other teams
+6. Create a new branch and work on any changes required for your specific use case or create new methods/classes that can be reused by other teams
+  
+7. Only team leads will be allowed to review the changes in a branch and merge it to the master branch
 
   
   Steps to install the latest library in your databricks cluster?
