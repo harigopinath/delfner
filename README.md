@@ -27,11 +27,11 @@
   
   Steps to install the latest library in your databricks cluster?
   
-  > Navigate to the master branch
-  > Navigate to the folder 'dist'
-  > Download the latest whl file
-  > Navigate to your databricks cluster, click on the libraries tab
-  > Click on Install New and upload the whl file
-  > Restart the cluster for uninstalling the old whl file and reinstalling it
+  > 1. Navigate to the master branch <br>
+  > 2. Navigate to the folder 'dist'
+  > 3. Download the latest whl file
+  > 4. Navigate to your databricks cluster, click on the libraries tab
+  > 5. Click on Install New and upload the whl file
+  > 6. Restart the cluster for uninstalling the old whl file and reinstalling it
   
  
