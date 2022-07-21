@@ -1,7 +1,7 @@
 # delfner
 
-**Description:**
-  A common python library for building scalable, reusable classes/methods for driving data engineering workloads at Network Rail
+**Description:** <br>
+  <tab> A common python library for building scalable, reusable classes/methods for driving data engineering workloads at Network Rail
 
 **Steps to setup the code in your local system:**
 
@@ -9,7 +9,7 @@
 2. Open VSCode, clock on Source Control tab on the left and clone this repository **Note:** You should have configured Azure repos in your VSCode earlier.
 3. While cloning the repository, it would have prompted you to choose a folder locally which will be your main project folder
 4. Click on the View menu -> Terminal
-5. Setup a python virtual environment and install the required libraries:
+5. Setup a python virtual environment and install the required libraries: <br>
     python3.8 -m venv venv <br>
     
     source venv/bin/activate <br>
