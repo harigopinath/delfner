@@ -20,4 +20,4 @@
     pip install delta == 1.1.1
     pip install databricks-cli
 
-6. Make sure that the versions that you have used above, match with the versions of your Databricks cluster. Check the below [link]([url]("https://docs.microsoft.com/en-us/azure/databricks/release-notes/runtime/releases")) for more information on DBR release notes 
+6. Make sure that the versions that you have used above, match with the versions of your Databricks cluster. Check the below [link](https://docs.microsoft.com/en-us/azure/databricks/release-notes/runtime/releases) for more information on DBR release notes 
