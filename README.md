@@ -23,3 +23,15 @@
     pip install dbx
 
 6. Make sure that the versions that you have used above, match with the versions of your Databricks cluster. Check the below [link](https://docs.microsoft.com/en-us/azure/databricks/release-notes/runtime/releases) for more information on DBR release notes 
+
+  
+  Steps to install the latest library in your databricks cluster?
+  
+  Navigate to the master branch
+  Navigate to the folder 'dist'
+  Download the latest whl file
+  Navigate to your databricks cluster, click on the libraries tab
+  Click on Install New and upload the whl file
+  Restart the cluster for uninstalling the old whl file and reinstalling it
+  
+ 
