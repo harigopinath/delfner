@@ -1,3 +1,4 @@
+import logging
 from com.networkrail.delfner.main.sparksession import spark
 from com.networkrail.delfner.main.Utils import pathExists
 
@@ -9,13 +10,9 @@ class ArchiveFiles():
     args:
         dbName: String - Database Name of Delta table
         tblName: String - Table Name of Delta table
+        columnName: String - A column on the table of date or timestamp type
         thresholdDays: String - number of days beyond which data should be archived
         archivePath: String - path where the old data should be archived
-        //
-        srcPath: String - source path where files arrive periodically
-        archivePath: String - path where all the source files are archived
-        fileType: String - file type or extension, ex: csv, json, avro,...
-        filePattern: String - regex for identifying source files to be archived (optional)
 
     methods:
         archiveDelta
@@ -23,12 +20,12 @@ class ArchiveFiles():
         dropOldData
 
     How to call:
-        archiveObj = ArchiveFiles("default", "some_Table_name", "800", "abfss://somePath" )
+        archiveObj = ArchiveFiles("default", "some_Table_name","column_name", "800", "abfss://somePath" )
 
-        archiveObj.archiveDelta
+        archiveObj.archiveDelta()
     """
 
-    def __init__(self, dbName, tblName, thresholdDays, archivePath):
+    def __init__(self, dbName, tblName, columnName, thresholdDays, archivePath):
         """
         desc:
             Initialize the required class variables
@@ -36,19 +33,24 @@ class ArchiveFiles():
         args:
             dbName: String - Database Name of Delta table
             tblName: String - Table Name of Delta table
+            columnName: String - A column on the table of date or timestamp type
             thresholdDays: String - number of days beyond which data should be archived
             archivePath: String - path where the old data should be archived
 
         return:
-            Does not return
+            Does not return any value
         """
 
         self.dbName = dbName
         self.tblName = tblName
+        self.columnName = columnName
         self.thresholdDays = thresholdDays
         self.archivePath = archivePath
-        self.df = spark.table(self.dbName, self.tblName) \
-            .filter(f"createDate >= current_timestamp() - INTERVAL {self.thresholdDays} DAYS")
+        self.df = spark.table(self.dbName + "." + self.tblName) \
+            .filter(f"{self.columnName} <= date_trunc('day', current_timestamp()) - INTERVAL {self.thresholdDays} DAYS")
+        self.recCount = self.df.count()
+
+        print("INFO: Initialised the class variables")
 
     def archiveDelta(self):
         """
@@ -62,7 +64,11 @@ class ArchiveFiles():
             Returns nothing - Writes the data to a delta path using append mode
 
         """
+        print("INFO: Writing the old data from delta table to archive location")
+
         self.df.write.format("delta").mode("append").save(self.archivePath)
+
+        print(f"INFO: Total no. of records Archived: {self.recCount}")
 
     def dropOldData(self):
         """
@@ -76,16 +82,23 @@ class ArchiveFiles():
             Returns nothing - Just deletes the data beyond a certain period on the delta table
         
         """
+        srcCount = self.recCount
+        tgtCount = self.archiveRecCount()
 
-        if pathExists(self.archivePath):
-            spark.sql(f"DELETE FROM {self.dbName}.{self.tblName} \
-                        createDate >= current_timestamp() - INTERVAL {self.thresholdDays} DAYS")
+        if srcCount != tgtCount:
+            print(f"WARN: Total number of records archived: {srcCount} \n \
+                   WARN: Total number of records deleted: {tgtCount} \n \
+                   ERROR: The Archived records is not equal to the deleted records - check the condition and run again")
 
-            spark.sql(f"ALTER TABLE SET TBLPROPERTIES(delta_archive_path = {self.archivePath})")
+        if pathExists(self.archivePath) & (srcCount == tgtCount):
+            spark.sql(f"DELETE FROM {self.dbName}.{self.tblName} WHERE {self.columnName} <= date_trunc('day', current_timestamp()) - INTERVAL {self.thresholdDays} DAYS")
 
-#    if __name__ == '__main__':
-#
-#        archiveDelta()
-#
-#
-#        dropOldData()
+            spark.sql(f"ALTER TABLE {self.dbName}.{self.tblName} SET TBLPROPERTIES(delta_archive_path = '{self.archivePath}')")
+
+            print(f"INFO: Total number of records deleted: {tgtCount}")
+
+    def archiveRecCount(self):
+        #Count the number of output rows from the recent version of the archived delta table
+        cnt = spark.sql(f"DESCRIBE HISTORY delta.`{self.archivePath}`").select("operationMetrics.numOutputRows").limit(1).collect()[0][0]
+  
+        return int(cnt)

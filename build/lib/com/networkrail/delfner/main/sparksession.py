@@ -1,9 +1,9 @@
 from pyspark.sql import SparkSession
+from pyspark.dbutils import DBUtils
+import logging
+
 
 spark = (SparkSession.builder
          .getOrCreate())
 
-
-df = spark.range(10)
-
-df.show()
+dbutils = DBUtils(spark)
