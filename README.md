@@ -5,6 +5,17 @@
 **Description:** <br>
   <tab> A common python library for building scalable, reusable classes/methods for driving data engineering workloads at Network Rail
 
+**General Conventions**
+  Modules:
+  Operations: Static functions typically involving applying transformation to a given dataframe
+  Utils: static functions that does not involve spark
+  Archival: A class for a specific functionality - archiving old data from delta tables
+  Operations_test: Unit tests for functions in Operations
+  Utils_test: Unit tests for functions in Utils
+  
+  *As a best practice, always write relevant unit tests for any new function added to Operations or Utils module
+  ** Integration tests are required for classes, for example - Archival
+  
 **Steps to setup the code in your local system:**
 
 1. Download and install VSCode (If required, raise a support ticket to get it installed)
@@ -22,4 +33,18 @@
     pip install databricks-cli <br>
     pip install dbx
 
-6. Make sure that the versions that you have used above, match with the versions of your Databricks cluster. Check the below [link](https://docs.microsoft.com/en-us/azure/databricks/release-notes/runtime/releases) for more information on DBR release notes 
+6. Create a new branch and work on any changes required for your specific use case or create new methods/classes that can be reused by other teams
+  
+7. Only team leads will be allowed to review the changes in a branch and merge it to the master branch
+
+  
+  Steps to install the latest library in your databricks cluster?
+  
+  > 1. Navigate to the master branch <br>
+  > 2. Navigate to the folder 'dist'
+  > 3. Download the latest whl file
+  > 4. Navigate to your databricks cluster, click on the libraries tab
+  > 5. Click on Install New and upload the whl file
+  > 6. Restart the cluster for uninstalling the old whl file and reinstalling it
+  
+ 
