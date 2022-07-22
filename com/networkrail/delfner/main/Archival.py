@@ -1,9 +1,8 @@
 from com.networkrail.delfner.main.sparksession import spark
-from delta.tables import DeltaTable
 from com.networkrail.delfner.main.Utils import pathExists
 
 
-class ArchiveFiles:
+class ArchiveFiles():
     """
     A pipeline for Archiving the files from given path to the archive path
 
@@ -27,8 +26,6 @@ class ArchiveFiles:
         archiveObj = ArchiveFiles("default", "some_Table_name", "800", "abfss://somePath" )
 
         archiveObj.archiveDelta
-
-
     """
 
     def __init__(self, dbName, tblName, thresholdDays, archivePath):
@@ -53,30 +50,42 @@ class ArchiveFiles:
         self.df = spark.table(self.dbName, self.tblName) \
             .filter(f"createDate >= current_timestamp() - INTERVAL {self.thresholdDays} DAYS")
 
-    def archiveDelta(self, df):
+    def archiveDelta(self):
         """
         desc:
             Writes the old/archived data of the delta table to a separate archive location
 
+        args:
+            No arguments - just makes use of class variables
+
+        return:
+            Returns nothing - Writes the data to a delta path using append mode
+
         """
-        df.write.format("delta").mode("append").save(self.archivePath)
+        self.df.write.format("delta").mode("append").save(self.archivePath)
 
     def dropOldData(self):
         """
         desc:
             Deletes the old/archived data from the original delta table
 
-            something else I write
+        args:
+            No arguments - just uses the class variables
+
+        return:
+            Returns nothing - Just deletes the data beyond a certain period on the delta table
+        
         """
 
-        deltaTable = DeltaTable.forName(spark, self.dbName + "." + self.tblName)
-
         if pathExists(self.archivePath):
-            deltaTable.delete("createDate >= current_timestamp() - INTERVAL {self.thresholdDays} DAYS")
+            spark.sql(f"DELETE FROM {self.dbName}.{self.tblName} \
+                        createDate >= current_timestamp() - INTERVAL {self.thresholdDays} DAYS")
 
             spark.sql(f"ALTER TABLE SET TBLPROPERTIES(delta_archive_path = {self.archivePath})")
 
-    if __name__ == '__main__':
-        archiveDelta()
-
-        dropOldData()
+#    if __name__ == '__main__':
+#
+#        archiveDelta()
+#
+#
+#        dropOldData()

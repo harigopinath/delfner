@@ -1,5 +1,6 @@
 import dbutils
 import glob
+from pyspark.sql.functions import raise_error
 
 
 def pathExists(tablePath):
@@ -13,7 +14,7 @@ def pathExists(tablePath):
         if 'java.io.FileNotFoundException' in str(e):
             return False
         else:
-            raise90
+            raise_error(f"Unknown exception encountered while validating the path {tablePath}")
 
 
 def srcPathExists(srcPath):
