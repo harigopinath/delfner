@@ -66,7 +66,11 @@ class ArchiveFiles():
         """
         print("INFO: Writing the old data from delta table to archive location")
 
-        self.df.write.format("delta").mode("append").save(self.archivePath)
+        try:
+            self.df.write.format("delta").mode("append").save(self.archivePath)
+        except Exception as e:
+            print("ERROR: Unable to write to Archive path - check the location")
+            raise Exception(e)
 
         print(f"INFO: Total no. of records Archived: {self.recCount}")
 
