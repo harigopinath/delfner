@@ -47,7 +47,7 @@ class ArchiveFiles():
         self.thresholdDays = thresholdDays
         self.archivePath = archivePath
         self.df = spark.table(self.dbName + "." + self.tblName) \
-            .filter(f"{self.columnName} <= date_trunc('day', current_timestamp()) - INTERVAL {self.thresholdDays} DAYS")
+                       .filter(f"{self.columnName} <= date_trunc('day', current_timestamp()) - INTERVAL {self.thresholdDays} DAYS")
         self.recCount = self.df.count()
 
         print("INFO: Initialised the class variables")
