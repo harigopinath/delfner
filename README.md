@@ -47,4 +47,6 @@
   > 5. Click on Install New and upload the whl file
   > 6. Restart the cluster for uninstalling the old whl file and reinstalling it
   
+ ## Archival of Delta Table - High Level Design
  
+ /images/Archival_Design.png
