@@ -49,4 +49,4 @@
   
  ## Archival of Delta Table - High Level Design
  
- (/images/Archival_Design.png)
+ [Archive](/images/Archival_Design.png)
