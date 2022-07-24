@@ -47,7 +47,7 @@ class ArchiveFiles():
         self.thresholdDays = thresholdDays
         self.archivePath = archivePath
         self.df = spark.table(self.dbName + "." + self.tblName) \
-            .filter(f"{self.columnName} <= date_trunc('day', current_timestamp()) - INTERVAL {self.thresholdDays} DAYS")
+                       .filter(f"{self.columnName} <= date_trunc('day', current_timestamp()) - INTERVAL {self.thresholdDays} DAYS")
         self.recCount = self.df.count()
 
         print("INFO: Initialised the class variables")
@@ -66,9 +66,13 @@ class ArchiveFiles():
         """
         print("INFO: Writing the old data from delta table to archive location")
 
-        self.df.write.format("delta").mode("append").save(self.archivePath)
+        try:
+            self.df.write.format("delta").mode("append").save(self.archivePath)
+        except Exception as e:
+            print("ERROR: Unable to write to Archive path - check the location")
+            raise Exception(e)
 
-        print(f"Total no. of records Archived: {self.recCount}")
+        print(f"INFO: Total no. of records Archived: {self.recCount}")
 
     def dropOldData(self):
         """

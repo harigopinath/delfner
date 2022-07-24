@@ -30,24 +30,53 @@ def tableExists(dbName, tblName):
         return False
 
 
-def createDeltaTable(df, path, dbName, tblName):
+def createDeltaTable(df, path, dbName, tblName, pCols=""):
     """
-    A Function for creating the target table using the given dataframe schema, database and table name
+    desc:
+        A static function for creating the target table using the given dataframe schema, database and table name
+
+    args:
+        df: DataFrame - A spark dataframe
+        path: String - A path or an external location for the table
+        dbName: String - Name of the database for creating the table
+        tblName: String - Name of the table to be created
+        pCols: String (Optional) - partition columns as a string with the column names separated with a comma
+
+    return:
+        N/A - Does not return anything. Just creates the table on the catalog
+
+    example:
+        df = spark.read.table("default.sample_table")
+        createDeltaTable(df, "/user/tmp/table/vbak", "default", "sample_table_2")
+
+    tip:
+        1. This function will only create an external table
+        2. The table will be created with the below table properties:
+            delta.autoOptimize.optimizeWrite = true,
+            delta.tuneFileSizesForRewrites = true,
+            delta.dataSkippingNumIndexedCols = 10,
+            delta.enableChangeDataCapture = true"
     """
-    tblDDL = df._jdf.schema().toDDL()
+
+    tblDDL = hiveDDL(df)
+
+    partitions = f" \n PARTITIONED BY ({pCols})" if pCols else ""
 
     tblProps = "delta.autoOptimize.autoCompact = false, \n\
-             delta.autoOptimize.optimizeWrite = true, \n\
-             delta.tuneFileSizesForRewrites = true, \n\
-             delta.enableChangeDataCapture = true"
+         delta.autoOptimize.optimizeWrite = true, \n\
+         delta.tuneFileSizesForRewrites = true, \n\
+         delta.dataSkippingNumIndexedCols = 10, \n\
+         delta.enableChangeDataCapture = true"
 
-    createTable = "CREATE TABLE IF NOT EXISTS {dbName}.{tblName} \n ({tblDDL}) \n USING DELTA \n LOCATION \"{path}\" \n TBLPROPERTIES ({tblProps})".format(
-        dbName=dbName,
-        tblName=tblName,
-        tblDDL=tblDDL,
-        path=path,
-        tblProps=tblProps
-    )
+    createTable = "CREATE TABLE IF NOT EXISTS {dbName}.{tblName} ({tblDDL}) \n USING DELTA {partitions} " \
+                  "\n LOCATION \"{path}\" \n TBLPROPERTIES ({tblProps})".format(
+                    dbName=dbName,
+                    tblName=tblName,
+                    tblDDL=tblDDL,
+                    partitions=partitions,
+                    path=path,
+                    tblProps=tblProps
+                    )
 
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {dbName}")
 
