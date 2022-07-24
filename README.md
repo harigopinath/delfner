@@ -37,6 +37,9 @@
   
 7. Only team leads will be allowed to review the changes in a branch and merge it to the master branch
 
+8. To build the whl file, run the below command in the terminal: <br>
+    python setup.py bdist_wheel
+
   
   Steps to install the latest library in your databricks cluster?
   
