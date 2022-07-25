@@ -13,10 +13,10 @@
   Operations_test: Unit tests for functions in Operations
   Utils_test: Unit tests for functions in Utils
   
-  *As a best practice, always write relevant unit tests for any new function added to Operations or Utils module
-  ** Integration tests are required for classes, for example - Archival
+  *As a best practice, always write relevant unit tests for any new function added to Operations or Utils module*
+  ** Integration tests are required for classes or testing a complete process**
   
-**Steps to setup the code in your local system:**
+#### Steps to setup the code in your local system:
 
 1. Download and install VSCode (If required, raise a support ticket to get it installed)
 2. Open VSCode, clock on Source Control tab on the left and clone this repository <br> **Note:** You should have configured Azure repos in your VSCode earlier.
@@ -38,10 +38,12 @@
 7. Only team leads will be allowed to review the changes in a branch and merge it to the master branch
 
 8. To build the whl file, run the below command in the terminal: <br>
-    python setup.py bdist_wheel
+    python setup.py bdist_wheel <br>
+    **Note:** Make sure the setutools are installed using: <br>
+    pip install setuptools
 
   
-  Steps to install the latest library in your databricks cluster?
+  #### Steps to install the latest library in your databricks cluster
   
   > 1. Navigate to the master branch <br>
   > 2. Navigate to the folder 'dist'
