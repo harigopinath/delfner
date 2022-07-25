@@ -19,7 +19,7 @@
 **Steps to setup the code in your local system:**
 
 1. Download and install VSCode (If required, raise a support ticket to get it installed)
-2. Open VSCode, clock on Source Control tab on the left and clone this repository **Note:** You should have configured Azure repos in your VSCode earlier.
+2. Open VSCode, clock on Source Control tab on the left and clone this repository <br> **Note:** You should have configured Azure repos in your VSCode earlier.
 3. While cloning the repository, it would have prompted you to choose a folder locally which will be your main project folder
 4. Click on the View menu -> Terminal
 5. Setup a python virtual environment and install the required libraries: <br>
